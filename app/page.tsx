@@ -2,6 +2,7 @@
 import { addUser } from './api/users'
 
 export default function Page() {
+  console.log('DATABASE_URL:', process.env.DATABASE_URL)
   async function create(formData: FormData) {
     'use server'
     // Connect to the Neon database
