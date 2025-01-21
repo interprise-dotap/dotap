@@ -12,16 +12,19 @@ export async function addUser({
   permission: string
   password: string
 }) {
-  const passwordHash = password // Ultilizar alguma lib para encriptar as senha (bcrypt || argon2)
+  const passwordHash = password // Usar uma lib de hash em produção, como bcrypt ou argon2
   try {
+    console.log('Iniciando inserção no banco...')
     const result = await db.insert(users).values({
       name,
       email,
       permission,
       passwordHash,
     })
-    console.error(`Usuário adicionado com sucesso:`, result)
+    console.log('Usuário adicionado com sucesso:', result)
+    return result
   } catch (error) {
-    console.error(`Erro ao adicionar o usuário:`, error)
+    console.error('Erro ao adicionar usuário:', error)
+    throw error // Repropaga o erro para diagnósticos posteriores
   }
 }
