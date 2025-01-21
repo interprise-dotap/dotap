@@ -26,7 +26,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="pt">
+    <html lang="pt-br" suppressHydrationWarning>
       <body
         className={`${openSans.variable} ${comfortaaSans.variable} antialiased`}
         suppressHydrationWarning
