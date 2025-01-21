@@ -1,6 +1,13 @@
-import { drizzle } from 'drizzle-orm/neon-serverless'
-import { Pool } from '@neondatabase/serverless'
+import 'dotenv/config';
+import { drizzle } from 'drizzle-orm/neon-http';
+import { neon, neonConfig } from '@neondatabase/serverless';
 
-const pool = new Pool({ connectionString: process.env.DATABASE_URL! })
+import ws from 'ws';
+neonConfig.webSocketConstructor = ws;
 
-export const db = drizzle(pool)
+// To work in edge environments (Cloudflare Workers, Vercel Edge, etc.), enable querying over fetch
+// neonConfig.poolQueryViaFetch = true
+
+const sql = neon(process.env.DATABASE_URL!);
+
+export const db = drizzle({ client: sql });
