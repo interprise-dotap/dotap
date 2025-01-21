@@ -4,6 +4,7 @@ import { Comfortaa, Open_Sans } from 'next/font/google';
 import './globals.css';
 import Header from '@/components/header';
 import { ThemeProvider } from '@/components/theme-provider';
+import NavBar from '@/components/nav-bar';
 
 const comfortaaSans = Comfortaa({
   variable: '--font-comfortaa',
@@ -38,9 +39,10 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <Header />
-          <main className="container mx-auto p-2 md:p-6 h-full">
-            {children}
-          </main>
+          <div className="grid grid-cols-[14rem_1fr] gap-2 h-[calc(100vh-3.6rem)]">
+            <NavBar />
+            <main className="container m-auto h-full p-4">{children}</main>
+          </div>
         </ThemeProvider>
       </body>
     </html>
