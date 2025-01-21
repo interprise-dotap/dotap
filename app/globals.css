@@ -3,19 +3,47 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: 221 24% 96%;
+  --foreground: 221 5% 10%;
+  --card: 221 24% 96%;
+  --card-foreground: 221 5% 15%;
+  --popover: 221 24% 96%;
+  --popover-foreground: 221 95% 10%;
+  --primary: 221 83.2% 53.3%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 221 24% 90%;
+  --secondary-foreground: 0 0% 0%;
+  --muted: 183 24% 95%;
+  --muted-foreground: 221 5% 40%;
+  --accent: 183 24% 90%;
+  --accent-foreground: 221 5% 15%;
+  --destructive: 0 50% 50%;
+  --destructive-foreground: 221 5% 96%;
+  --border: 221 24% 82%;
+  --input: 221 24% 50%;
+  --ring: 221 83.2% 53.3%;
+  --radius: 0.5rem;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+.dark {
+  --background: 221 24% 10%;
+  --foreground: 221 5% 96%;
+  --card: 221 24% 10%;
+  --card-foreground: 221 5% 96%;
+  --popover: 221 24% 5%;
+  --popover-foreground: 221 5% 96%;
+  --primary: 221 83.2% 53.3%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 221 24% 20%;
+  --secondary-foreground: 0 0% 100%;
+  --muted: 183 24% 25%;
+  --muted-foreground: 221 5% 65%;
+  --accent: 183 24% 25%;
+  --accent-foreground: 221 5% 95%;
+  --destructive: 0 50% 50%;
+  --destructive-foreground: 221 5% 96%;
+  --border: 221 24% 50%;
+  --input: 221 24% 50%;
+  --ring: 221 83.2% 53.3%;
+  --radius: 0.5rem;
 }
