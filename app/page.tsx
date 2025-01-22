@@ -1,7 +1,6 @@
-import { addUser } from './api/users'
 
 export default function Page() {
-  console.log('DATABASE_URL:', process.env.DATABASE_URL)
+
   async function create(formData: FormData) {
     'use server'
 
@@ -12,7 +11,15 @@ export default function Page() {
 
     if (name && email && permission && password) {
 
-      await addUser({ email, name, password, permission })
+      await fetch('http://localhost:3000/api/users',
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ name, email, password, permission }),
+        }
+      )
     }
   }
 
