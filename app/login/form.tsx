@@ -14,6 +14,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { LoginFormSchema, LoginFormValues } from './schema';
 import { Button } from '@/components/ui/button';
+import { signIn } from '../actions';
 
 export function FormLogin() {
   const form = useForm({
@@ -25,7 +26,7 @@ export function FormLogin() {
   });
 
   function onSubmit(data: LoginFormValues) {
-    console.log(data);
+    signIn(data)
     form.reset();
   }
   return (
