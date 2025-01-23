@@ -2,11 +2,11 @@ export const dynamic = 'force-static'
 
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt, { genSalt } from 'bcryptjs';
-import jwt from "jsonwebtoken";
 
 import { db } from '@/app/db';
 import { users } from '@/app/db/schema';
 import { eq } from "drizzle-orm";
+import { SignJWT } from "jose";
 
 type RequestBody = {
   email: string
@@ -15,6 +15,8 @@ type RequestBody = {
 
 export async function POST(req: NextRequest, res: NextResponse) {
   const JWT_SECRET = process.env.JWT_SECRET!
+
+  const secret = new TextEncoder().encode(JWT_SECRET);
 
   const { email, password }: RequestBody = await req.json()
 
@@ -31,11 +33,12 @@ export async function POST(req: NextRequest, res: NextResponse) {
     const isMatch = await bcrypt.compare(passwordWithPaper, result[0].passwordHash)
 
     if (isMatch && user) {
-      const token = jwt.sign(
-        { id: user.id, permission: user.permission },
-        JWT_SECRET,
-        { expiresIn: "1h" }
-      );
+
+      const token = await new SignJWT({ id: user.id, permission: user.permission })
+        .setProtectedHeader({ alg: 'HS256' }) // Algoritmo de assinatura
+        .setIssuedAt() // Data de emissão
+        .setExpirationTime('2h') // Expiração em 2 horas
+        .sign(secret); // Assina o token com o segredo
 
       return NextResponse.json({ token }, { status: 201 })
     }
