@@ -13,7 +13,7 @@ type RequestBody = {
   password: string
 }
 
-export async function POST(req: NextRequest, res: NextResponse) {
+export async function POST(req: NextRequest) {
   const JWT_SECRET = process.env.JWT_SECRET!
 
   const secret = new TextEncoder().encode(JWT_SECRET);
