@@ -6,6 +6,7 @@ import { redirect } from 'next/navigation';
 
 type SignInProps = { email: string, password: string }
 
+const API_DOTAP = process.env.API_DOTAP!
 const JWT_SECRET = process.env.JWT_SECRET!
 const secret = new TextEncoder().encode(JWT_SECRET);
 
@@ -13,7 +14,7 @@ export async function signIn({ email, password }: SignInProps) {
 
   const cookieStore = await cookies()
 
-  const response = await fetch('http://localhost:3000/api/login', {
+  const response = await fetch(`${API_DOTAP}/api/login`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
