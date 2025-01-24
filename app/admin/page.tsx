@@ -1,4 +1,7 @@
 export default function Admin() {
+  const API_DOTAP = process.env.API_DOTAP!
+
+
   async function create(formData: FormData) {
     'use server';
 
@@ -8,7 +11,7 @@ export default function Admin() {
     const password = formData.get('password')?.toString();
 
     if (name && email && permission && password) {
-      await fetch('http://localhost:3000/api/users', {
+      await fetch(`${API_DOTAP}/api/users`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
