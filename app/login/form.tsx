@@ -1,22 +1,28 @@
-'use client';
+'use client'
+
+import { useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+
+import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
+import { LoaderCircle } from 'lucide-react'
+
+import { LoginFormSchema, LoginFormValues } from './schema';
+import { signIn } from '../actions'
 
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
-import { LoginFormSchema, LoginFormValues } from './schema';
-import { Button } from '@/components/ui/button';
-import { signIn } from '../actions';
+} from '@/components/ui/form'
 
 export function FormLogin() {
+  const [isLoading, setIsLoading] = useState(false)
+
   const form = useForm({
     resolver: zodResolver(LoginFormSchema),
     defaultValues: {
@@ -25,10 +31,18 @@ export function FormLogin() {
     },
   });
 
-  function onSubmit(data: LoginFormValues) {
-    signIn(data)
-    form.reset();
+  async function onSubmit(data: LoginFormValues) {
+    setIsLoading(true)
+    try {
+      await signIn(data)
+      form.reset()
+    } catch (error) {
+      console.error('Erro ao fazer login:', error);
+    } finally {
+      setIsLoading(false)
+    }
   }
+
   return (
     <Form {...form}>
       <form
@@ -66,8 +80,8 @@ export function FormLogin() {
           )}
         />
         <div className="flex justify-center">
-          <Button type="submit" size="lg">
-            Acessar
+          <Button className='w-full' type="submit" size="lg" disabled={isLoading}>
+            {isLoading ? <LoaderCircle size={12} className='animate-spin' /> : 'Acessar'}
           </Button>
         </div>
       </form>
