@@ -19,9 +19,12 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form'
+import { useToast } from '@/hooks/use-toast'
+import { redirect } from 'next/navigation'
 
 export function FormLogin() {
   const [isLoading, setIsLoading] = useState(false)
+  const { toast } = useToast()
 
   const form = useForm({
     resolver: zodResolver(LoginFormSchema),
@@ -32,15 +35,21 @@ export function FormLogin() {
   });
 
   async function onSubmit(data: LoginFormValues) {
-    setIsLoading(true)
-    try {
-      await signIn(data)
-      form.reset()
-    } catch (error) {
-      console.error('Erro ao fazer login:', error);
-    } finally {
-      setIsLoading(false)
+    setIsLoading(true);
+
+    const result = await signIn(data);
+
+    if (result?.error) {
+      setIsLoading(false);
+      toast({ title: 'Ops', description: result.error })
+      return;
     }
+
+    if (result?.redirectUrl) {
+      redirect(result.redirectUrl);
+    }
+
+    setIsLoading(false);
   }
 
   return (
