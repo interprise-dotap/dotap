@@ -5,6 +5,7 @@ import './globals.css';
 import Header from '@/components/header';
 import { ThemeProvider } from '@/components/theme-provider';
 import NavBar from '@/components/nav-bar';
+import { Toaster } from '@/components/ui/toaster';
 
 const comfortaaSans = Comfortaa({
   variable: '--font-comfortaa',
@@ -40,6 +41,7 @@ export default function RootLayout({
         >
           {children}
         </ThemeProvider>
+        <Toaster />
       </body>
     </html>
   );
