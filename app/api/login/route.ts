@@ -1,52 +1,62 @@
-export const dynamic = 'force-static'
+export const dynamic = 'force-static';
 
-import { NextRequest, NextResponse } from "next/server";
-import bcrypt, { genSalt } from 'bcryptjs';
+import { NextRequest, NextResponse } from 'next/server';
+import bcrypt from 'bcryptjs';
 
 import { db } from '@/app/db';
 import { users } from '@/app/db/schema';
-import { eq } from "drizzle-orm";
-import { SignJWT } from "jose";
+import { eq } from 'drizzle-orm';
+import { SignJWT } from 'jose';
 
 type RequestBody = {
-  email: string
-  password: string
-}
+  email: string;
+  password: string;
+};
 
 export async function POST(req: NextRequest) {
-  const JWT_SECRET = process.env.JWT_SECRET!
-
-  const secret = new TextEncoder().encode(JWT_SECRET);
-
-  const { email, password }: RequestBody = await req.json()
-
-  const pepper = process.env.PEPPER;
-
-  const passwordWithPaper = password + pepper
-
-
   try {
-    const result = await db.select().from(users).where(eq(users.email, email))
+    const JWT_SECRET = process.env.JWT_SECRET!;
+    const secret = new TextEncoder().encode(JWT_SECRET);
+    const { email, password }: RequestBody = await req.json();
 
-    const user = result.at(0)
+    const pepper = process.env.PEPPER;
+    const passwordWithPepper = password + pepper;
 
-    const isMatch = await bcrypt.compare(passwordWithPaper, result[0].passwordHash)
+    // Busca o usuário no banco de dados
+    const result = await db.select().from(users).where(eq(users.email, email));
+    const user = result.at(0);
 
-    if (isMatch && user) {
-
-      const token = await new SignJWT({ id: user.id, permission: user.permission })
-        .setProtectedHeader({ alg: 'HS256' }) // Algoritmo de assinatura
-        .setIssuedAt() // Data de emissão
-        .setExpirationTime('2h') // Expiração em 2 horas
-        .sign(secret); // Assina o token com o segredo
-
-      return NextResponse.json({ token }, { status: 201 })
+    if (!user) {
+      return NextResponse.json(
+        { message: 'E-mail não encontrado.' },
+        { status: 404 }
+      );
     }
 
+    // Compara a senha fornecida com o hash armazenado
+    const isMatch = await bcrypt.compare(passwordWithPepper, user.passwordHash);
+
+    if (!isMatch) {
+      return NextResponse.json(
+        { message: 'Senha incorreta.' },
+        { status: 401 }
+      );
+    }
+
+    // Gera o token JWT
+    const token = await new SignJWT({ id: user.id, permission: user.permission })
+      .setProtectedHeader({ alg: 'HS256' })
+      .setIssuedAt()
+      .setExpirationTime('2h')
+      .sign(secret);
+
+    // Retorna o token
+    return NextResponse.json({ token }, { status: 201 });
   } catch (error) {
-    console.error('Erro ao realizar login:', error)
-    return NextResponse.json({ message: 'fon!' }, { status: 500 })
+    console.error('Erro ao realizar login:', error);
+    return NextResponse.json(
+      { message: 'Erro inesperado ao processar a requisição.' },
+      { status: 500 }
+    );
   }
 }
-
-
