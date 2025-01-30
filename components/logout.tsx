@@ -10,6 +10,8 @@ async function handleLogOut() {
   const cookieStore = await cookies()
 
   cookieStore.delete("auth_token")
+  cookieStore.delete("user_infos")
+
   redirect("/login");
 }
 

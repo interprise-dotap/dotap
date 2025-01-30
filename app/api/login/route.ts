@@ -44,7 +44,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Gera o token JWT
-    const token = await new SignJWT({ id: user.id, permission: user.permission })
+    const token = await new SignJWT({ id: user.id, permission: user.permission, name: user.name, email: user.email })
       .setProtectedHeader({ alg: 'HS256' })
       .setIssuedAt()
       .setExpirationTime('2h')
