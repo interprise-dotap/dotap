@@ -1,7 +1,6 @@
 export default function Admin() {
   const API_DOTAP = process.env.API_DOTAP!
 
-
   async function create(formData: FormData) {
     'use server';
 

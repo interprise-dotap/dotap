@@ -1,32 +1,36 @@
 import { Clock, Pointer, UserPen, UserPlus, UserSearch } from 'lucide-react';
+import { cookies } from 'next/headers';
 import Link from 'next/link';
 
 const admPages = [
   {
     title: 'Usuários Cadastrados',
     icon: <UserSearch size={18} />,
-    href: '',
+    href: '/admin/registered-users',
   },
-  { title: 'Cadastro de Usuários', icon: <UserPlus size={18} />, href: '' },
-  { title: 'Solicitações', icon: <UserPen size={18} />, href: '' },
-  { title: 'Pontos Registrados', icon: <Clock size={18} />, href: '' },
+  { title: 'Cadastro de Usuários', icon: <UserPlus size={18} />, href: '/admin/user-registration' },
+  { title: 'Solicitações', icon: <UserPen size={18} />, href: '/admin/requests' },
+  { title: 'Pontos Registrados', icon: <Clock size={18} />, href: '/admin/recorded-points' },
 ];
 
-const userPages = [
+const collaboratorPages = [
   {
     title: 'Meu Ponto',
     icon: <Pointer size={18} />,
-    href: '',
+    href: '/collaborator/my-point',
   },
-  { title: 'Meus Registros', icon: <Clock size={18} />, href: '' },
-  { title: 'Minhas Solicitações', icon: <UserPen size={18} />, href: '' },
+  { title: 'Meus Registros', icon: <Clock size={18} />, href: '/collaborator/my-records' },
+  { title: 'Minhas Solicitações', icon: <UserPen size={18} />, href: '/collaborator/my-requests' },
 ];
 
-export default function NavBar() {
+const pages = { admin: admPages, collaborator: collaboratorPages }
+
+
+export default function NavBar({ permission }: { permission: 'admin' | 'collaborator' }) {
   return (
-    <div className="border-x-2 border-foreground/10 bg-secondary shadow">
+    <div className="border-foreground/10 bg-secondary">
       <ul className="flex flex-col gap-2 text-sm px-2 py-4 font-semibold font-sans">
-        {admPages.map((link) => (
+        {pages[permission].map((link) => (
           <li
             key={link.title}
             className="p-2 flex gap-2 items-center  hover:bg-primary/20 transition-colors rounded"

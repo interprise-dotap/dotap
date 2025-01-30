@@ -36,7 +36,7 @@ export async function signIn({ email, password }: SignInProps) {
     let decoded;
     try {
       decoded = await jwtVerify(token, secret) as {
-        payload: { id: number, permission: string, iat: number, exp: number },
+        payload: { id: number, permission: string, iat: number, exp: number, name: string, email: string },
         protectedHeader: { alg: string };
       };
     } catch (error) {
@@ -45,6 +45,7 @@ export async function signIn({ email, password }: SignInProps) {
     }
 
     cookieStore.set('auth_token', token);
+    cookieStore.set('user_infos', JSON.stringify({ name: decoded.payload.name, email: decoded.payload.email }))
 
     const redirectUrl = decoded.payload.permission === 'admin' ? '/admin' : '/collaborator';
     return { success: true, redirectUrl };
