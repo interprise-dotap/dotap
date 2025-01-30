@@ -1,6 +1,6 @@
-import { jwtVerify } from 'jose';
-import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
+import { NextResponse } from 'next/server';
+import { jwtVerify } from 'jose';
 
 const JWT_SECRET = process.env.JWT_SECRET!;
 
@@ -9,32 +9,26 @@ export async function middleware(req: NextRequest) {
   const secret = new TextEncoder().encode(JWT_SECRET);
 
   const { pathname } = req.nextUrl;
+  const isPublicRoute = pathname === "/login"
 
-  // Permitir acesso à rota de login caso não haja token
-  if (pathname === "/login") {
-    if (token) {
-      try {
-        const { payload } = await jwtVerify(token, secret) as {
-          payload: { permission: string };
-        };
-
-        // Redireciona baseado na permissão
-        if (payload.permission === "admin") {
-          return NextResponse.redirect(new URL("/admin", req.url));
-        } else if (payload.permission === "collaborator") {
-          return NextResponse.redirect(new URL("/collaborator", req.url));
-        }
-      } catch {
-        // Token inválido ou expirado
-        return NextResponse.next(); // Permitir acesso ao login
-      }
-    }
-    return NextResponse.next(); // Sem token, segue para login
+  if (!token) {
+    return NextResponse.next()
   }
 
-  // Proteger outras rotas
-  if (!token) {
-    return NextResponse.redirect(new URL("/login", req.url));
+  if (isPublicRoute) {
+    try {
+      const { payload } = await jwtVerify(token, secret) as {
+        payload: { permission: string };
+      };
+
+      if (payload.permission === "admin") {
+        return NextResponse.redirect(new URL("/admin", req.url));
+      } else if (payload.permission === "collaborator") {
+        return NextResponse.redirect(new URL("/collaborator", req.url));
+      }
+    } catch {
+      return NextResponse.next();
+    }
   }
 
   try {
@@ -42,16 +36,16 @@ export async function middleware(req: NextRequest) {
       payload: { permission: string };
     };
 
-    // Verificar permissões e redirecionar
-    if (pathname.startsWith("/admin") && payload.permission !== "admin") {
-      return NextResponse.redirect(new URL("/collaborator", req.url));
-    }
+    const isAdminPage = pathname.startsWith("/admin");
+    const isCollaboratorPage = pathname.startsWith("/collaborator");
 
-    if (pathname.startsWith("/collaborator") && payload.permission !== "collaborator") {
-      return NextResponse.redirect(new URL("/admin", req.url));
-    }
+    const isNotAdmin = payload.permission !== "admin";
+    const isNotCollaborator = payload.permission !== "collaborator";
 
-    return NextResponse.next();
+    if ((isAdminPage && isNotAdmin) || (isCollaboratorPage && isNotCollaborator)) {
+      const redirectPath = isAdminPage ? "/collaborator" : "/admin";
+      return NextResponse.redirect(new URL(redirectPath, req.url));
+    }
   } catch (error) {
     console.error("Error verifying token:", error);
     return NextResponse.redirect(new URL("/login", req.url));
@@ -59,5 +53,5 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!_next|favicon.ico|api).*)"], // Protege tudo, exceto rotas públicas
+  matcher: ["/((?!_next|favicon.ico|api).*)"],
 };
