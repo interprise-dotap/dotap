@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button'
 import { LoaderCircle } from 'lucide-react'
 
 import { LoginFormSchema, LoginFormValues } from './schema';
-import { signIn } from '../../actions'
+import { signIn } from '../../../services/sign-in'
 
 import {
   Form,
