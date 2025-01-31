@@ -3,8 +3,8 @@ export const dynamic = 'force-static'
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt, { genSalt } from 'bcryptjs';
 
-import { db } from '@/app/db';
-import { users } from '@/app/db/schema';
+import { db } from '@/lib/db';
+import { users } from '@/lib/db/schema';
 
 type RequestBody = {
   name: string;
