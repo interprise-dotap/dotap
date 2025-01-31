@@ -4,11 +4,17 @@ import { LogOut } from './logout';
 import { Avatar, AvatarFallback } from './ui/avatar';
 
 export default async function Header() {
-  const cookieStore = await cookies()
+  const cookieStore = await cookies();
 
-  const userInfos: { name: string, email: string } = JSON.parse(cookieStore.get('user_infos')!.value)
+  const userInfos: { name: string; email: string } = JSON.parse(
+    cookieStore.get('user_infos')!.value
+  );
 
-  const abbreviatedName = userInfos.name.trim().split(' ').map(word => word.charAt(0).toUpperCase()).join()
+  const abbreviatedName = userInfos.name
+    .trim()
+    .split(' ')
+    .map((word) => word.charAt(0).toUpperCase())
+    .join();
 
   return (
     <header className="bg-secondary shadow border-foreground/10 drop-shadow">
@@ -25,7 +31,7 @@ export default async function Header() {
         <div className="flex gap-4">
           <ModeToggle />
           <LogOut />
-          <Avatar title={userInfos.name} className='font-sans'>
+          <Avatar title={userInfos.name}>
             <AvatarFallback>{abbreviatedName}</AvatarFallback>
           </Avatar>
         </div>

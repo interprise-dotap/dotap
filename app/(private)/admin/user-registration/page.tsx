@@ -20,6 +20,7 @@ import {
   UserRegistrationFormValues,
 } from './schema';
 import { PasswordInput } from '@/components/ui/password-input';
+import { LoaderCircle } from 'lucide-react';
 
 export default function Admin() {
   const [isLoading, setIsLoading] = useState(false);
@@ -51,11 +52,12 @@ export default function Admin() {
       return;
     }
 
+    toast({ title: 'Sucesso', description: 'Usuário cadastrado com sucesso!' });
     setIsLoading(false);
   }
 
   return (
-    <div className="h-full flex items-center justify-center font-sans">
+    <div className="h-full flex items-center justify-center">
       <Form {...form}>
         <form
           className="flex flex-col w-96 gap-4 bg-secondary px-6 py-8 rounded-lg shadow"
@@ -120,7 +122,11 @@ export default function Admin() {
           />
 
           <Button disabled={isLoading} type="submit">
-            {isLoading ? 'Enviando...' : 'Enviar'}
+            {isLoading ? (
+              <LoaderCircle size={12} className="animate-spin" />
+            ) : (
+              'Enviar'
+            )}
           </Button>
         </form>
       </Form>

@@ -30,7 +30,7 @@ export default function RootLayout({
   return (
     <html lang="pt-br" suppressHydrationWarning>
       <body
-        className={`${openSans.variable} ${comfortaaSans.variable} antialiased`}
+        className={`${openSans.variable} ${comfortaaSans.variable} antialiased font-sans`}
         suppressHydrationWarning
       >
         <ThemeProvider
