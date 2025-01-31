@@ -15,7 +15,8 @@ export async function CreateUser({
   password,
   permission,
 }: CreateUserProps) {
-  const response = await fetch(`${API_DOTAP}/api/users`, {
+
+  const response = await fetch(`${API_DOTAP}/api/users/create`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ name, email, password, permission }),
@@ -28,7 +29,7 @@ export async function CreateUser({
     try {
       const errorData = await response.json();
       errorMessage = errorData.message || errorMessage;
-    } catch (_) {}
+    } catch (_) { }
 
     return { error: errorMessage, status: statusCode };
   }
