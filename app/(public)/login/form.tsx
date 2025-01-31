@@ -57,7 +57,7 @@ export function FormLogin() {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="flex flex-col gap-4 w-64 font-sans"
+        className="flex flex-col gap-4 w-64"
       >
         <FormField
           control={form.control}

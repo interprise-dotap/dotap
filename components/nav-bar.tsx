@@ -8,9 +8,21 @@ const admPages = [
     icon: <UserSearch size={18} />,
     href: '/admin/registered-users',
   },
-  { title: 'Cadastro de Usuários', icon: <UserPlus size={18} />, href: '/admin/user-registration' },
-  { title: 'Solicitações', icon: <UserPen size={18} />, href: '/admin/requests' },
-  { title: 'Pontos Registrados', icon: <Clock size={18} />, href: '/admin/recorded-points' },
+  {
+    title: 'Cadastro de Usuários',
+    icon: <UserPlus size={18} />,
+    href: '/admin/user-registration',
+  },
+  {
+    title: 'Solicitações',
+    icon: <UserPen size={18} />,
+    href: '/admin/requests',
+  },
+  {
+    title: 'Pontos Registrados',
+    icon: <Clock size={18} />,
+    href: '/admin/recorded-points',
+  },
 ];
 
 const collaboratorPages = [
@@ -19,17 +31,28 @@ const collaboratorPages = [
     icon: <Pointer size={18} />,
     href: '/collaborator/my-point',
   },
-  { title: 'Meus Registros', icon: <Clock size={18} />, href: '/collaborator/my-records' },
-  { title: 'Minhas Solicitações', icon: <UserPen size={18} />, href: '/collaborator/my-requests' },
+  {
+    title: 'Meus Registros',
+    icon: <Clock size={18} />,
+    href: '/collaborator/my-records',
+  },
+  {
+    title: 'Minhas Solicitações',
+    icon: <UserPen size={18} />,
+    href: '/collaborator/my-requests',
+  },
 ];
 
-const pages = { admin: admPages, collaborator: collaboratorPages }
+const pages = { admin: admPages, collaborator: collaboratorPages };
 
-
-export default function NavBar({ permission }: { permission: 'admin' | 'collaborator' }) {
+export default function NavBar({
+  permission,
+}: {
+  permission: 'admin' | 'collaborator';
+}) {
   return (
     <div className="border-foreground/10 bg-secondary">
-      <ul className="flex flex-col gap-2 text-sm px-2 py-4 font-semibold font-sans">
+      <ul className="flex flex-col gap-2 text-sm px-2 py-4 font-semibold ">
         {pages[permission].map((link) => (
           <li
             key={link.title}
