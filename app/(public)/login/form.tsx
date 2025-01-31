@@ -1,15 +1,15 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 
-import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
-import { LoaderCircle } from 'lucide-react'
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { LoaderCircle } from 'lucide-react';
 
 import { LoginFormSchema, LoginFormValues } from './schema';
-import { signIn } from '../../../services/sign-in'
+import { signIn } from '../../../services/sign-in';
 
 import {
   Form,
@@ -18,13 +18,14 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form'
-import { useToast } from '@/hooks/use-toast'
-import { redirect } from 'next/navigation'
+} from '@/components/ui/form';
+import { useToast } from '@/hooks/use-toast';
+import { redirect } from 'next/navigation';
+import { PasswordInput } from '@/components/ui/password-input';
 
 export function FormLogin() {
-  const [isLoading, setIsLoading] = useState(false)
-  const { toast } = useToast()
+  const [isLoading, setIsLoading] = useState(false);
+  const { toast } = useToast();
 
   const form = useForm({
     resolver: zodResolver(LoginFormSchema),
@@ -41,7 +42,7 @@ export function FormLogin() {
 
     if (result?.error) {
       setIsLoading(false);
-      toast({ title: 'Ops', description: result.error })
+      toast({ title: 'Ops', description: result.error });
       return;
     }
 
@@ -78,19 +79,24 @@ export function FormLogin() {
             <FormItem>
               <FormLabel>Senha:</FormLabel>
               <FormControl>
-                <Input
-                  {...field}
-                  placeholder="Digite sua senha"
-                  type="password"
-                />
+                <PasswordInput {...field} placeholder="Digite sua senha" />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
         <div className="flex justify-center">
-          <Button className='w-full' type="submit" size="lg" disabled={isLoading}>
-            {isLoading ? <LoaderCircle size={12} className='animate-spin' /> : 'Acessar'}
+          <Button
+            className="w-full"
+            type="submit"
+            size="lg"
+            disabled={isLoading}
+          >
+            {isLoading ? (
+              <LoaderCircle size={12} className="animate-spin" />
+            ) : (
+              'Acessar'
+            )}
           </Button>
         </div>
       </form>
