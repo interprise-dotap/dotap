@@ -51,7 +51,7 @@ export default function Admin() {
       toast({ title: 'Ops', description: result.error });
       return;
     }
-
+    form.reset();
     toast({ title: 'Sucesso', description: 'Usuário cadastrado com sucesso!' });
     setIsLoading(false);
   }
