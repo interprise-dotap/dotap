@@ -1,55 +1,129 @@
+'use client';
+import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { useToast } from '@/hooks/use-toast';
+import { CreateUser } from '@/services/create-user';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import {
+  UserRegistrationFormSchema,
+  UserRegistrationFormValues,
+} from './schema';
+import { PasswordInput } from '@/components/ui/password-input';
+
 export default function Admin() {
-  const API_DOTAP = process.env.API_DOTAP!
+  const [isLoading, setIsLoading] = useState(false);
+  const { toast } = useToast();
 
-  async function create(formData: FormData) {
-    'use server';
+  const form = useForm({
+    resolver: zodResolver(UserRegistrationFormSchema),
+    defaultValues: {
+      name: '',
+      email: '',
+      password: '',
+      isAdmin: false,
+    },
+  });
 
-    const name = formData.get('name')?.toString();
-    const email = formData.get('email')?.toString();
-    const permission = formData.get('permissions')?.toString();
-    const password = formData.get('password')?.toString();
+  async function onSubmit(data: UserRegistrationFormValues) {
+    setIsLoading(true);
 
-    if (name && email && permission && password) {
-      await fetch(`${API_DOTAP}/api/users`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ name, email, password, permission }),
-      });
+    const result = await CreateUser({
+      name: data.name,
+      email: data.email,
+      password: data.password,
+      permission: data.isAdmin ? 'admin' : 'collaborator',
+    });
+
+    if (result?.error) {
+      setIsLoading(false);
+      toast({ title: 'Ops', description: result.error });
+      return;
     }
+
+    setIsLoading(false);
   }
 
   return (
-    <form action={create} className="flex flex-col w-80 gap-4">
-      <input
-        className="p-1"
-        type="name"
-        placeholder="write a name"
-        name="name"
-      />
-      <input
-        className="p-1"
-        type="email"
-        placeholder="write a email"
-        name="email"
-      />
-      <input
-        className="p-1"
-        type="permissions"
-        placeholder="write a permissions"
-        name="permissions"
-      />
-      <input
-        className="p-1"
-        type="password"
-        placeholder="write a password"
-        name="password"
-      />
+    <div className="h-full flex items-center justify-center font-sans">
+      <Form {...form}>
+        <form
+          className="flex flex-col w-96 gap-4 bg-secondary px-6 py-8 rounded-lg shadow"
+          onSubmit={form.handleSubmit(onSubmit)}
+        >
+          <h1 className="text-xl text-center font-bold ">
+            Cadastro de usuários
+          </h1>
+          <FormField
+            control={form.control}
+            name="name"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Nome:</FormLabel>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="email"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>E-mail:</FormLabel>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="password"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Senha:</FormLabel>
+                <FormControl>
+                  <PasswordInput {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="isAdmin"
+            render={({ field }) => (
+              <FormItem className="flex items-center gap-2">
+                <FormControl>
+                  <Checkbox
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
+                </FormControl>
+                <FormLabel className="text-sm">Administrador</FormLabel>
+              </FormItem>
+            )}
+          />
 
-      <button className="text-white" type="submit">
-        Submit
-      </button>
-    </form>
+          <Button disabled={isLoading} type="submit">
+            {isLoading ? 'Enviando...' : 'Enviar'}
+          </Button>
+        </form>
+      </Form>
+    </div>
   );
 }
