@@ -1,16 +1,21 @@
-import { ModeToggle } from './mode-toggle';
-import { cookies } from 'next/headers';
-import { LogOut } from './logout';
+'use client';
+
+import { useTheme } from 'next-themes';
 import { Avatar, AvatarFallback } from './ui/avatar';
+import { Button } from './ui/button';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuTrigger,
+} from './ui/dropdown-menu';
+// import { LogOut } from './logout';
 
-export default async function Header() {
-  const cookieStore = await cookies();
+export default function Header({ name }: { name: string }) {
+  const { setTheme } = useTheme();
 
-  const userInfos: { name: string; email: string } = JSON.parse(
-    cookieStore.get('user_infos')!.value
-  );
-
-  const abbreviatedName = userInfos.name
+  const abbreviatedName = name
     .trim()
     .split(' ')
     .map((word) => word.charAt(0).toUpperCase())
@@ -27,13 +32,38 @@ export default async function Header() {
             dotap
           </span>
         </div>
-
         <div className="flex gap-4">
-          <ModeToggle />
-          <LogOut />
-          <Avatar title={userInfos.name}>
-            <AvatarFallback>{abbreviatedName}</AvatarFallback>
-          </Avatar>
+          {/* <LogOut /> */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="outline"
+                className="relative h-10 w-10 rounded-full"
+              >
+                <Avatar title={name}>
+                  <AvatarFallback>{abbreviatedName}</AvatarFallback>
+                </Avatar>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-56" align="start" forceMount>
+              <DropdownMenuLabel className="text-xs text-muted-foreground">
+                Temas
+              </DropdownMenuLabel>
+              <DropdownMenuItem onClick={() => setTheme('light')}>
+                Claro
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setTheme('dark')}>
+                Escuro
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setTheme('system')}>
+                Sistema
+              </DropdownMenuItem>
+              <DropdownMenuLabel className="text-xs text-muted-foreground">
+                Conta
+              </DropdownMenuLabel>
+              <DropdownMenuItem>Sair da conta</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
     </header>
