@@ -45,7 +45,7 @@ export async function signIn({ email, password }: SignInProps) {
     }
 
     cookieStore.set('auth_token', token);
-    cookieStore.set('user_infos', JSON.stringify({ name: decoded.payload.name, email: decoded.payload.email }))
+    cookieStore.set('user_infos', JSON.stringify({ id: decoded.payload.id, name: decoded.payload.name, email: decoded.payload.email }))
 
     const redirectUrl = decoded.payload.permission === 'admin' ? '/admin' : '/collaborator';
     return { success: true, redirectUrl };
